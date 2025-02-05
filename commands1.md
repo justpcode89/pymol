@@ -817,3 +817,940 @@ PYMOL API
 ```
 
 ## imaging commands
+
+### `png`
+```
+DESCRIPTION
+ 
+    "png" saves a PNG format image file of the current display.
+ 
+USAGE
+ 
+    png filename [, width [, height [, dpi [, ray]]]]
+ 
+ARGUMENTS
+ 
+    filename = string: file path to be written
+ 
+    width = integer or string: width in pixels (without units), inches (in)
+    or centimeters (cm). If unit suffix is given, dpi argument is required
+    as well. If only one of width or height is given, the aspect ratio of
+    the viewport is preserved. {default: 0 (current)}
+ 
+    height = integer or string: height (see width) {default: 0 (current)}
+ 
+    dpi = float: dots-per-inch {default -1.0 (unspecified)}
+ 
+    ray = 0 or 1: should ray be run first {default: 0 (no)}
+ 
+EXAMPLES
+ 
+    png image.png
+    png image.png, dpi=300
+    png image.png, 10cm, dpi=300, ray=1
+ 
+NOTES
+ 
+    PNG is the only image format supported by PyMOL.
+ 
+SEE ALSO
+ 
+    mpng, save
+ 
+PYMOL API
+ 
+    cmd.png(string filename, int width, int height, float dpi,
+            int ray, int quiet)
+ 
+```
+
+### `mpng`
+```
+DESCRIPTION
+ 
+    "mpng" writes movie frames as a series of numbered png files.
+ 
+USAGE
+ 
+    mpng prefix [, first [, last [, preserve [, modal [, mode [, quiet
+        [, width [, height ]]]]]]]]
+ 
+ARGUMENTS
+ 
+    prefix = string: filename prefix for saved images -- output files
+    will be numbered and end in ".png"
+ 
+    first = integer: starting frame {default: 0 (first frame)}
+ 
+    last = integer: last frame {default: 0 (last frame)}
+ 
+    preserve = 0/1: Only write non-existing files {default: 0}
+ 
+    modal = integer: will frames be rendered with a modal draw loop
+ 
+    mode = int: 2=ray, 1=draw, 0=normal {default: -1, check
+    ray_trace_frames or draw_frames}
+ 
+    width = int: width in pixels {default: current viewport}
+ 
+    height = int: height in pixels {default: current viewport}
+ 
+NOTES
+ 
+    If the "ray_trace_frames" variable is non-zero, then the frames
+    will be ray-traced.  Note that this can take many hours for a long
+    movie with complex content displayed.
+ 
+    Also, be sure to avoid setting "cache_frames" when rendering a
+    long movie to avoid running out of memory.
+ 
+    Arguments "first" and "last" can be used to specify an inclusive
+    interval over which to render frames.  Thus, you can write a smart
+    Python program that will automatically distribute rendering over a
+    cluster of workstations.  If these options are left at zero, then
+    the entire movie will be rendered.
+ 
+PYMOL API
+ 
+    cmd.mpng(string prefix, int first, int last)
+```
+
+## ray tracing commands
+
+### `ray`
+```
+DESCRIPTION
+ 
+    "ray" creates a ray-traced image of the current frame. This
+    can take some time (up to several minutes, depending on image
+    complexity).
+ 
+USAGE
+ 
+    ray [width [,height [,antialias [,angle [,shift [,renderer [,quiet
+        [,async ]]]]]]]]]
+ 
+ARGUMENTS
+ 
+    width = integer {default: 0 (current)}
+ 
+    height = integer {default: 0 (current)}
+ 
+    antialias = integer {default: -1 (use antialias setting)}
+ 
+    angle = float: y-axis rotation for stereo image generation
+    {default: 0.0}
+ 
+    shift = float: x-axis translation for stereo image generation
+    {default: 0.0}
+ 
+    renderer = -1, 0, 1, or 2: respectively, default, built-in,
+    pov-ray, or dry-run {default: 0}
+ 
+    async = 0 or 1: should rendering be done in a background thread?
+ 
+EXAMPLES
+ 
+    ray
+    ray 1024,768
+    ray renderer=2
+ 
+NOTES
+ 
+    Default width and height are taken from the current viewpoint. If
+    one is specified but not the other, then the missing value is
+    scaled so as to preserve the current aspect ratio.
+ 
+    angle and shift can be used to generate matched stereo pairs
+ 
+    renderer = 1 uses PovRay.  This is Unix-only and you must have
+        "povray" in your path.  It utilizes two two temporary files:
+        "tmp_pymol.pov" and "tmp_pymol.png".
+ 
+    See "help faster" for optimization tips with the builtin renderer.
+    See "help povray" for how to use PovRay instead of PyMOL's
+    built-in ray-tracing engine.
+ 
+PYMOL API
+ 
+    cmd.ray(int width, int height, int antialias, float angle,
+            float shift, int renderer, int quiet, int async)
+SEE ALSO
+ 
+    draw, png, save
+```
+
+## MAPS commands
+
+### `isomesh`
+```
+DESCRIPTION
+ 
+    "isomesh" creates a mesh isosurface object from a map object.
+ 
+USAGE
+ 
+    isomesh name, map, level [, selection [, buffer [, state [, carve ]]]]
+ 
+ARGUMENTS
+ 
+    name = the name for the new mesh isosurface object.
+ 
+    map = the name of the map object to use for computing the mesh.
+ 
+    level = the contour level.
+ 
+    selection = an atom selection about which to display the mesh with
+        an additional "buffer" (if provided).
+ 
+    state = the state into which the object should be loaded (default=1)
+        (set state=0 to append new mesh as a new state)
+ 
+    carve = a radius about each atom in the selection for which to
+        include density. If "carve" is not provided, then the whole
+        brick is displayed.
+ 
+NOTES
+ 
+    If the mesh object already exists, then the new mesh will be
+    appended onto the object as a new state (unless you indicate a state).
+ 
+    state > 0: specific state
+    state = 0: all states
+    state = -1: current state
+ 
+    source_state > 0: specific state
+    source_state = 0: include all states starting with 0
+    source_state = -1: current state
+    source_state = -2: last state in map
+ 
+SEE ALSO
+ 
+    isodot, load
+```
+
+### `isodot`
+```
+DESCRIPTION
+ 
+    "isodot" creates a dot isosurface object from a map object.
+ 
+USAGE
+ 
+    isodot name, map [, level [, selection [, buffer [, state
+        [, carve [, source_state [, quiet ]]]]]]]
+ 
+ARGUMENTS
+ 
+    map = the name of the map object to use.
+ 
+    level = the contour level.
+ 
+    selection = an atom selection about which to display the mesh with
+        an additional "buffer" (if provided).
+ 
+NOTES
+ 
+    If the dot isosurface object already exists, then the new dots will
+    be appended onto the object as a new state.
+```
+
+## display commands
+
+### `cls`
+```
+DESCRIPTION
+ 
+    "cls" clears the output buffer.
+ 
+USAGE
+ 
+    cls
+```
+
+### `viewport`
+
+```
+DESCRIPTION
+ 
+    "viewport" changes the size of the graphics display area.
+ 
+USAGE
+ 
+    viewport width, height
+ 
+PYMOL API
+ 
+    cmd.viewport(int width, int height)
+```
+
+## selections commands
+
+### `select`
+```
+DESCRIPTION
+ 
+    "select" creates a named atom selection from a
+    selection-expression.
+ 
+USAGE
+ 
+    select name, selection [, enable [, quiet [, merge [, state [, domain ]]]]]
+ 
+ARGUMENTS
+ 
+    name = a unique name for the selection
+ 
+    selection = a selection-expression
+ 
+NOTES
+ 
+    If a selection-expression with explicit surrounding parethenses is
+    provided as the first argument, then the default selection name
+    is used as the name argument.
+ 
+EXAMPLES 
+ 
+    select chA, chain A
+    select ( resn HIS )
+    select near142, resi 142 around 5
+ 
+PYMOL API
+ 
+    cmd.select(string name, string selection)
+ 
+```
+
+### `mask`
+
+```
+DESCRIPTION
+ 
+    "mask" makes it impossible to select the indicated atoms using the
+    mouse.  This is useful when you are working with one molecule in
+    front of another and wish to avoid accidentally selecting atoms in
+    the background.
+ 
+USAGE
+ 
+    mask (selection)
+ 
+PYMOL API
+ 
+    cmd.mask( string selection="(all)" )
+ 
+SEE ALSO
+ 
+    unmask, protect, deprotect, mouse
+```
+
+### `unmask`
+
+```
+DESCRIPTION
+ 
+    "unmask" reverses the effect of "mask" on the indicated atoms.
+ 
+PYMOL API
+ 
+    cmd.unmask( string selection="(all)" )
+ 
+USAGE
+ 
+    unmask (selection)
+ 
+SEE ALSO
+ 
+    mask, protect, deprotect, mouse
+```
+
+## settings commands
+
+### `set`
+
+```
+DESCRIPTION
+ 
+    "set" changes global, object, object-state, or per-atom settings.
+ 
+USAGE
+ 
+    set name [,value [,selection [,state ]]]
+ 
+ARGUMENTS
+ 
+    name = string: setting name
+ 
+    value = string: a setting value {default: 1}
+ 
+    selection = string: name-pattern or selection-expression
+    {default:'' (global)}
+ 
+    state = a state number {default: 0 (per-object setting)}
+ 
+EXAMPLES
+ 
+    set orthoscopic
+ 
+    set line_width, 3
+ 
+    set surface_color, white, 1hpv
+ 
+    set sphere_scale, 0.5, elem C
+ 
+NOTES
+ 
+    The default behavior (with a blank selection) is global.  If the
+    selection is "all", then the setting entry in each individual
+    object will be changed.  Likewise, for a given object, if state is
+    zero, then the object setting will be modified.  Otherwise, the
+    setting for the indicated state within the object will be
+    modified.
+ 
+    If a selection is provided as opposed to an object name, then the
+    atomic setting entries are modified.
+ 
+    The following per-atom settings are currently implemented.  Others
+    may seem to be recognized but will have no effect when set on a
+    per-atom basis.
+ 
+    * sphere_color
+    * surface_color
+    * mesh_color
+    * label_color
+    * dot_color
+    * cartoon_color
+    * ribbon_color
+    * transparency (for surfaces)
+    * sphere_transparency
+ 
+    Note that if you attempt to use the "set" command with a per-bond
+    setting over a selection of atoms, the setting change will appear
+    to take, but no change will be observed.  Please use the
+    "set_bond" command for per-bond settings.
+ 
+ 
+PYMOL API
+ 
+    cmd.set(string name, string value, string selection, int state,
+            int updates, int quiet)
+ 
+SEE ALSO
+ 
+    get, set_bond
+ 
+```
+
+### `button`
+
+```
+DESCRIPTION
+ 
+    "button" can be used to redefine what the mouse buttons do.
+ 
+USAGE
+ 
+    button button, modifier, action
+ 
+ARGUMENTS
+ 
+    button = left, middle, right, wheel, double_left, double_middle,
+        double_right, single_left, single_middle, or single_right
+ 
+    modifiers = None, Shft, Ctrl, CtSh, CtAl, CtAl, CtAS, 
+ 
+    actions = None, Rota, Move, MovZ, Slab, +Box, -Box, Clip, MovS,
+        +/-, PkAt, Pk1, MvSZ, Sele, Orig, Menu, PkAt, Pk1 RotO, MovO,
+        MvOZ, MovA, PkAt, PkTB, MvSZ MvAZ, DrgM, RotZ, PkBd, ClpN,
+        ClpF
+ 
+NOTES
+ 
+   Changes made using the button command are easily overridden when
+   the user iterates through the mouse modes.  This behavior needs to
+   be changed.
+ 
+   Obsolete actions: lb, mb, rb, +lb, +mb, +rb, +lbX, -lbX,
+ 
+   Unsupported, Internal, or Future Actions: RotD, MovD, MvDZ, RotF,
+    MovF, MvFZ, TorF, RotV, MovV, MvVZ, DgMZ, DgRT
+ 
+PYMOL API
+ 
+    cmd.button(string button, string modifier, string action)
+ 
+SEE ALSO
+ 
+    config_mouse
+```
+
+## atoms commands
+
+### `alter`
+```
+DESCRIPTION
+ 
+    "alter" changes atomic properties using an expression evaluated
+    within a temporary namespace for each atom.
+ 
+USAGE
+ 
+    alter selection, expression
+ 
+EXAMPLES
+ 
+    alter chain A, chain='B'
+    alter all, resi=str(int(resi)+100)
+    sort
+ 
+NOTES
+ 
+    Symbols defined (* = read only):
+ 
+    name, resn, resi, resv, chain, segi, elem, alt, q, b, vdw, type,
+    partial_charge, formal_charge, elec_radius, text_type, label, 
+    numeric_type, model*, state*, index*, ID, rank, color, ss,
+    cartoon, flags
+ 
+    All strings must be explicitly quoted.  This operation typically
+    takes several seconds per thousand atoms altered.  
+ 
+    You may need to issue a "rebuild" in order to update associated
+    representations.
+ 
+    WARNING: You should always issue a "sort" command on an object
+    after modifying any property which might affect canonical atom
+    ordering (names, chains, etc.).  Failure to do so will confound
+    subsequent "create" and "byres" operations.  
+ 
+SEE ALSO
+ 
+    alter_state, iterate, iterate_state, sort
+```
+
+### `alter_state`
+```
+DESCRIPTION
+ 
+    "alter_state" changes atom coordinates and flags over a particular
+    state and selection using the Python evaluator with a temporary
+    namespace for each atomic coordinate.
+ 
+USAGE
+ 
+    alter_state state, selection, expression
+ 
+EXAMPLES
+ 
+    alter_state 1, all, x=x+5
+    rebuild
+ 
+NOTES
+ 
+    By default, most of the symbols from "alter" are available for use
+    on a read-only basis.  
+ 
+    It is usually necessary to "rebuild" representations once your
+    alterations are complete.
+ 
+SEE ALSO
+ 
+    iterate_state, alter, iterate
+```
+## editing commands
+
+### `create`
+```
+DESCRIPTION
+ 
+    "create" creates a new molecule object from a selection.  It can
+    also be used to create states in an existing object.
+ 
+USAGE
+ 
+    create name, selection [,source_state [,target_state ] ]
+ 
+ARGUMENTS
+ 
+    name = string: name of object to create or modify
+ 
+    selection = string: atoms to include in the new object
+ 
+    source_state = integer: {default: 0 -- copy all states}
+ 
+    target_state = integer: -1 appends after last state {default: 0}
+ 
+PYMOL API
+ 
+    cmd.create(string name, string selection, int state,
+               int target_state, int discrete)
+ 
+NOTES
+ 
+    If the source and target states are zero (default), then all
+    states will be copied.  Otherwise, only the indicated states will
+    be copied.
+ 
+SEE ALSO
+ 
+    load, copy, extract
+```
+
+### `replace`
+```
+DESCRIPTION
+ 
+    "replace" replaces the picked atom with a new atom.
+ 
+USAGE
+ 
+    replace element, geometry, valence [, h_fill [, name ]]
+ 
+NOTES
+ 
+    Immature functionality. See code for details.
+ 
+PYMOL API
+ 
+    cmd.replace(string element, int geometry, int valence, int h_fill,
+                string name)
+ 
+SEE ALSO
+ 
+    remove, attach, fuse, bond, unbond
+```
+
+### `remove`
+
+```
+DESCRIPTION
+ 
+    "remove" eleminates the atoms in a selection from their respective
+    molecular objects.
+ 
+USAGE
+ 
+    remove selection
+ 
+EXAMPLES
+ 
+    remove resi 124 
+ 
+PYMOL API
+ 
+    cmd.remove( string selection )
+ 
+SEE ALSO
+ 
+    delete
+```
+
+### `h_fill`
+```
+DESCRIPTION
+ 
+    "h_fill" removes and replaces hydrogens on the atom or bond picked
+    for editing.
+ 
+USAGE
+ 
+    h_fill
+ 
+NOTES
+ 
+    This is useful for fixing hydrogens after changing bond valences.
+ 
+PYMOL API
+ 
+    cmd.h_fill()
+ 
+SEE ALSO
+ 
+    edit, cycle_valence, h_add
+```
+
+### `remove_picked`
+```
+DESCRIPTION
+ 
+    "remove_picked" removes the atom or bond currently picked for
+    editing.
+ 
+USAGE
+ 
+    remove_picked [ hydrogens ]
+ 
+NOTES
+ 
+    This function is usually connected to the
+    DELETE key and "CTRL-D".
+ 
+    By default, attached hydrogens will also be deleted unless
+    hydrogen-flag is zero.
+ 
+PYMOL API
+ 
+    cmd.remove_picked(integer hydrogens)
+ 
+SEE ALSO
+ 
+    attach, replace
+```
+
+### `edit`
+
+```
+DESCRIPTION
+ 
+    "edit" picks atoms or a bond for editing.
+ 
+USAGE
+ 
+    edit selection1 [, selection2 [, selection3 [, selection4 [, pkresi [, pkbond ]]]]] 
+ 
+NOTES
+ 
+    If only one selection is provided, an atom is picked.
+ 
+    If two selections are provided, the bond between them
+    is picked (by default, if one exists).
+ 
+PYMOL API
+ 
+    cmd.edit(string selection1, string selection2,
+             string selection3, string selection4,
+             int pkresi, int pkbond, int quiet)
+ 
+SEE ALSO
+ 
+    unpick, remove_picked, cycle_valence, torsion
+ 
+```
+
+### `bond`
+```
+DESCRIPTION
+ 
+    "bond" creates a new bond between two selections, each of which
+    should contain one atom.
+ 
+USAGE
+ 
+    bond [atom1, atom2 [,order]]
+ 
+ARGUMENTS
+ 
+    atom1 = str: Atom selection of first atom {default: pk1}
+ 
+    atom2 = str: Atom selection of second atom {default: pk2}
+ 
+    order = int: Bond order {default: 1}
+ 
+    symop = str: Symmetry operation code for second atom (e.g. "1_555")
+ 
+NOTES
+ 
+    The atoms must both be within the same object.
+ 
+SEE ALSO
+ 
+    unbond, fuse, attach, replace, remove_picked
+```
+
+### `unbond`
+
+```
+DESCRIPTION
+ 
+    "unbond" removes all bonds between two selections.
+ 
+USAGE
+ 
+    unbond atom1,atom2
+ 
+ARGUMENTS
+ 
+    atom1 = string {default: (pk1)}
+ 
+    atom2 = string {default: (pk2)}
+ 
+PYMOL API
+ 
+    cmd.unbond(selection atom1, selection atom2)
+ 
+SEE ALSO
+ 
+    bond, fuse, remove_picked, attach, detach, replace
+```
+
+### `h_add`
+```
+DESCRIPTION
+ 
+    "h_add" adds hydrogens onto a molecule based on current valences.
+ 
+USAGE
+ 
+    h_add [ selection [, state ]]
+ 
+ARGUMENTS
+ 
+    selection = string {default: (all)}
+ 
+    state = int {default: 0 (all states)}
+ 
+NOTES
+ 
+    Because PDB files do not normally contain bond valences for
+    ligands and other nonstandard components, it may be necessary to
+    manually correct ligand conformations before adding hydrogens.
+ 
+SEE ALSO
+ 
+    h_fill
+```
+
+### `fuse`
+
+```
+DESCRIPTION
+ 
+    "fuse" joins two objects into one by forming a bond.  A copy of
+    the object containing the first atom is moved so as to form an
+    approximately resonable bond with the second, and that copy is
+    then merged with the first object.
+ 
+USAGE
+ 
+    fuse [ selection1 [, selection2 [, mode [, recolor [, move ]]]]]
+ 
+ARGUMENTS
+ 
+    selection1 = str: single atom selection (will be copied to object 2)
+ 
+    selection2 = str: single atom selection
+ 
+    mode = int: {default: 0}
+      3: don't move and don't create a bond, just combine into single object
+ 
+    recolor = bool: recolor C atoms to match target {default: 1}
+ 
+    move = bool: {default: 1}
+ 
+NOTES
+ 
+    Each selection must include a single atom in each object.
+    The atoms can both be hydrogens, in which case they are
+    eliminated, or they can both be non-hydrogens, in which
+    case a bond is formed between the two atoms.
+ 
+SEE ALSO
+ 
+    bond, unbond, attach, replace, fuse, remove_picked
+```
+
+### `undo`
+```
+DESCRIPTION
+ 
+    "undo" restores the previous conformation of the object currently
+    being edited.
+ 
+USAGE
+ 
+    undo
+ 
+SEE ALSO
+ 
+    redo, push_undo
+```
+
+### `redo`
+
+```
+DESCRIPTION
+ 
+    "redo" reapplies the conformational change of the object currently
+    being edited.
+ 
+USAGE
+ 
+    redo
+ 
+SEE ALSO
+ 
+    undo, push_undo
+```
+
+### `protect`
+```
+ 
+    "protect" protects a set of atoms from tranformations performed
+    using the editing features.  This is most useful when you are
+    modifying an internal portion of a chain or cycle and do not wish
+    to affect the rest of the molecule.
+ 
+USAGE
+ 
+    protect (selection)
+ 
+PYMOL API
+ 
+    cmd.protect(string selection)
+ 
+SEE ALSO
+ 
+    deprotect, mask, unmask, mouse, editing
+```
+
+### `cycle_valence`
+```
+DESCRIPTION
+ 
+    "cycle_valence" cycles the valence on the currently selected bond.
+ 
+USAGE
+ 
+    cycle_valence [ h_fill ]
+ 
+ARGUMENTS
+ 
+    h_fill = 0 or 1: updated hydrogens too? {default: 1 (yes)}
+ 
+EXAMPLE
+ 
+    cycle_valence
+ 
+NOTES
+ 
+    If the h_fill flag is true, hydrogens will be added or removed to
+    satisfy valence requirements.
+ 
+    This function is usually connected to the DELETE key and "CTRL-W".
+ 
+PYMOL API
+ 
+    cmd.cycle_valence(int h_fill)
+ 
+SEE ALSO
+ 
+    remove_picked, attach, replace, fuse, h_fill
+ 
+```
+
+### `attach`
+```
+DESCRIPTION
+ 
+    "attach" adds a single atom on to the picked atom.
+ 
+USAGE
+ 
+    attach element, geometry, valence
+ 
+PYMOL API
+ 
+    cmd.attach( element, geometry, valence )
+```
+
+## fitting tools
