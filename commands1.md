@@ -533,6 +533,41 @@ PYMOL API
 
 ## movies commands
 
+MOVIES
+ 
+    To create a movie, simply load multiple coordinate files
+    into the same object.  This can be accomplish at the command line,
+    using script files, or by writing PyMOL API-based programs.
+ 
+    The commands:
+ 
+load frame001.pdb,mov
+load frame002.pdb,mov
+ 
+    will create a two frame movie.  So will the following program:
+ 
+from pymol import cmd
+ 
+for a in ( "frame001.pdb","frame002.pdb" ):
+    cmd.load(a,"mov")
+ 
+    which can be executed at the command line using the "run" command.
+ 
+    Python built-in glob module can be useful for loading movies.
+ 
+from pymol import cmd
+import glob
+for a in ( glob.glob("frame*.pdb") ):
+    cmd.load(a,"mov")
+ 
+NOTE
+ 
+    Because PyMOL stores all movie frames in memory, there is a
+    a practical limit to the number of atoms in all coordinate files. 
+    160 MB free RAM enables 500,000 atoms with line representations.
+    Complex representations require significantly more memory.
+    
+
 ### `mplay`
 
 ```
@@ -1753,4 +1788,244 @@ PYMOL API
     cmd.attach( element, geometry, valence )
 ```
 
+SUMMARY
+ 
+PyMOL has a rudimentary, but quite functional molecular structure
+editing capability.  However, you will need to use an external mimizer
+to "clean-up" your structures after editing.  Furthermore, if you are
+going to modify molecules other than proteins, then you will also need
+a way of assigning atom types on the fly.
+ 
+To edit a conformation or structure, you first need to enter editing
+mode (see Mouse Menu).  Then you can pick an atom (CTRL-Middle click)
+or a bond (CTRL-Right click).  Next, you can use the other
+CTRL-key/click combinations listed on the right hand side of the
+screen to adjust the attached fragments.  For example, CTRL-left click
+will move fragments about the selected torsion.
+ 
+Editing structures is done through a series of CTRL key actions
+applied to the currently selected atom or bonds. See "help edit_keys"
+for the exact combinations.  To build structures, you usually just
+replace hydrogens with methyl groups, etc., and then repeat.  They are
+no short-cuts currently available for building common groups, but that
+is planned for later versions.
+ 
+NOTE
+ 
+Only "lines" and "sticks" representations can be picked using the
+mouse, however other representations will not interfere with picking
+so long as one of these representation is present underneath.
+
+
 ## fitting tools
+
+### `fit`
+```
+DESCRIPTION
+ 
+    "fit" superimposes the model in the first selection on to the model
+    in the second selection. Only matching atoms in both selections will
+    be used for the fit.
+ 
+USAGE
+ 
+    fit mobile, target [, mobile_state [, target_state [, quiet
+        [, matchmaker [, cutoff [, cycles [, object ]]]]]]]
+ 
+ARGUMENTS
+ 
+    mobile = string: atom selection
+ 
+    target = string: atom selection
+ 
+    mobile_state = integer: object state {default=0, all states)
+ 
+    target_state = integer: object state {default=0, all states)
+ 
+    matchmaker = integer: how to match atom pairs {default: 0}
+        -1:  assume that atoms are stored in the identical order
+        0/1: match based on all atom identifiers (segi,chain,resn,resi,name,alt)
+        2:   match based on ID
+        3:   match based on rank
+        4:   match based on index (same as -1 ?)
+ 
+    cutoff = float: outlier rejection cutoff (only if cycles>0) {default: 2.0}
+ 
+    cycles = integer: number of cycles in outlier rejection refinement {default: 0}
+ 
+    object = string: name of alignment object to create {default: None}
+ 
+EXAMPLES
+ 
+fit protA, protB
+ 
+NOTES
+ 
+Since atoms are matched based on all of their identifiers
+(including segment and chain identifiers), this command is only
+helpful when comparing very similar structures.
+ 
+SEE ALSO
+ 
+align, super, pair_fit, rms, rms_cur, intra_fit, intra_rms, intra_rms_cur
+```
+
+### `rms`
+
+```
+DESCRIPTION
+ 
+    "rms" computes a RMS fit between two atom selections, but does not
+    tranform the models after performing the fit.
+ 
+USAGE
+ 
+    rms (selection), (target-selection)
+ 
+EXAMPLES
+ 
+    fit ( mutant and name CA ), ( wildtype and name CA )
+ 
+SEE ALSO
+ 
+    fit, rms_cur, intra_fit, intra_rms, intra_rms_cur, pair_fit
+ 
+```
+
+### `rms_cur`
+```
+DESCRIPTION
+ 
+    "rms_cur" computes the RMS difference between two atom
+    selections without performing any fitting.
+ 
+USAGE
+ 
+    rms_cur (selection), (selection)
+ 
+SEE ALSO
+ 
+    fit, rms, intra_fit, intra_rms, intra_rms_cur, pair_fit
+```
+
+### `pair_fit`
+```
+DESCRIPTION
+ 
+    "pair_fit" fits matched sets of atom pairs between two objects.
+ 
+USAGE
+ 
+    pair_fit selection, selection, [ selection, selection [ ... ]]
+ 
+EXAMPLES
+ 
+    # superimpose protA residues 10-25 and 33-46 to protB residues 22-37 and 41-54:
+ 
+    pair_fit protA/10-25+33-46/CA, protB/22-37+41-54/CA
+ 
+    # superimpose ligA atoms C1, C2, and C4 to ligB atoms C8, C4, and C10, respectively:
+ 
+    pair_fit ligA////C1, ligB////C8, ligA////C2, ligB////C4, ligA////C3, ligB////C10
+ 
+NOTES
+ 
+    So long as the atoms are stored in PyMOL with the same order
+    internally, you can provide just two selections.  Otherwise, you
+    may need to specify each pair of atoms separately, two by two, as
+    additional arguments to pair_fit.
+ 
+    Script files are usually recommended when using this command.
+ 
+SEE ALSO
+ 
+    fit, rms, rms_cur, intra_fit, intra_rms, intra_rms_cur
+```
+
+### `intra_fit`
+
+```
+DESCRIPTION
+ 
+    "intra_fit" fits all states of an object to an atom selection
+    in the specified state.  It returns the rms values to python
+    as an array.
+ 
+USAGE 
+ 
+    intra_fit selection [, state]
+ 
+ARGUMENTS
+ 
+    selection = string: atoms to fit
+ 
+    state = integer: target state
+ 
+    pbc = 0/1: Consider periodic boundary conditions {default: 1}
+ 
+PYMOL API
+ 
+    cmd.intra_fit( string selection, int state )
+ 
+EXAMPLES
+ 
+    intra_fit ( name CA )
+ 
+PYTHON EXAMPLE
+ 
+    from pymol import cmd
+    rms = cmd.intra_fit("(name CA)",1)
+ 
+SEE ALSO
+ 
+    fit, rms, rms_cur, intra_rms, intra_rms_cur, pair_fit
+```
+
+### `intra_rms`
+```
+
+DESCRIPTION
+ 
+    "intra_rms" calculates rms fit values for all states of an object
+    over an atom selection relative to the indicated state.
+    Coordinates are left unchanged.  The rms values are returned as a
+    python array.
+ 
+EXAMPLE
+ 
+    from pymol import cmd
+    rms = cmd.intra_rms("(name CA)",1)
+    print rms
+ 
+PYMOL API
+ 
+    cmd.intra_rms(string selection, int state)
+ 
+SEE ALSO
+ 
+    fit, rms, rms_cur, intra_fit, intra_rms_cur, pair_fit
+```
+### `intra_rms_cur`
+```
+DESCRIPTION
+ 
+    "intra_rms_cur" calculates rms values for all states of an object
+    over an atom selection relative to the indicated state without
+    performing any fitting.  The rms values are returned
+    as a python array.
+ 
+PYMOL API
+ 
+    cmd.intra_rms_cur( string selection, int state)
+ 
+PYTHON EXAMPLE
+ 
+    from pymol import cmd
+    rms = cmd.intra_rms_cur("(name CA)",1)
+ 
+SEE ALSO
+ 
+    fit, rms, rms_cur, intra_fit, intra_rms, pair_fit
+```
+
+## colors commands
