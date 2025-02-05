@@ -393,11 +393,263 @@ for obj in cmd.get_names():
 
 `show contacts`
 
+### Extract a chain or segment:
 
+`extract new_object, chain A  # Extracts chain A into a new object`
 
+### Split a multi-state object into individual states:
 
+`split_states object_name`
 
+### Combine multiple objects into one:
 
+`combine new_object, object1, object2`
+
+### Remove hydrogens:
+
+`remove hydrogens`
+
+### Remove waters:
+
+`remove solvent`
+
+### Display atomic density:
+
+`show dots`
+
+### Display atomic orbitals:
+
+`show spheres`
+
+### Display atomic labels with custom formatting:
+
+`label selection, "Residue %s, Atom %s" % (resi, name)`
+
+### Display atomic labels with B-factors:
+
+`label selection, "B-factor: %.2f" % b`
+
+### Display atomic labels with charge:
+
+`label selection, "Charge: %.2f" % q`
+
+### Color by custom property:
+
+```
+spectrum q, selection  # Colors by atomic charge
+spectrum b, selection  # Colors by B-factor
+```
+
+### Color by distance from a point:
+
+```
+pseudoatom center, pos=[x, y, z]  # Create a pseudoatom at (x, y, z)
+distance_to_center, selection, center  # Measure distance to pseudoatom
+spectrum any, distance_to_center  # Color by distance
+```
+
+### Color by sequence conservation:
+
+```
+fetch 1abc, type=conservation  # Requires conservation data
+spectrum cons, selection
+```
+
+### Color by secondary structure type:
+
+`util.cbss  # Color by secondary structure`
+
+### Measure center of mass:
+
+`get_center_of_mass selection`
+
+### Measure molecular volume:
+
+`get_volume selection`
+
+### Measure solvent-accessible surface area (SASA):
+
+`get_sasa selection`
+
+### Measure buried surface area:
+
+`get_buried_area selection1, selection2`
+
+### Measure electrostatic potential at a point:
+
+`get_property electrostatic_potential, selection`
+
+### Set ray tracing quality:
+
+```
+set ray_trace_mode, 1  # Enable ray tracing
+set ray_trace_gain, 10  # Adjust brightness
+set ray_trace_color, black  # Set background color for ray tracing
+```
+
+### Render with shadows:
+
+`set ray_shadows, 1`
+
+### Render with ambient occlusion:
+
+`set ray_ambient_occlusion, 1`
+
+### Render with reflections:
+
+`set ray_reflections, 1`
+
+### Loop through all atoms in a selection:
+
+`iterate selection, print(name, resi, vdw)`
+
+### Loop through all residues in a selection:
+
+`iterate_state 1, selection, print(resi, resn)`
+
+### Create a custom function:
+
+```
+def color_by_chain():
+    for chain in cmd.get_chains():
+        cmd.color("chain_color", f"chain {chain}")
+color_by_chain()
+```
+
+### Batch process multiple PDB files:
+
+```
+import os
+for file in os.listdir("/path/to/pdbs"):
+    if file.endswith(".pdb"):
+        cmd.load(file)
+        cmd.show("cartoon")
+        cmd.png(f"{file}.png")
+        cmd.delete("all")
+```
+
+### Add custom text labels:
+
+```
+pseudoatom label_pos, pos=[x, y, z]
+label label_pos, "Custom Text"
+```
+
+### Add arrows:
+
+```
+pseudoatom arrow_start, pos=[x1, y1, z1]
+pseudoatom arrow_end, pos=[x2, y2, z2]
+distance arrow, arrow_start, arrow_end
+```
+
+### Add shapes (e.g., spheres, cylinders):
+
+```
+cmd.pseudoatom("sphere_center", pos=[x, y, z])
+cmd.show("spheres", "sphere_center")
+cmd.set("sphere_scale", 5, "sphere_center")  # Adjust sphere size
+```
+
+### Create a rotation animation:
+
+```
+mset 1-360  # 360 frames
+mview store  # Store current view
+turn y, 360  # Rotate 360 degrees around the Y-axis
+mray         # Render frames
+```
+
+### Create a zoom animation:
+
+```
+mset 1-100
+mview store
+zoom selection, 10  # Zoom in
+mray
+```
+
+### Create a morphing animation:
+
+```
+fetch 1abc, async=0
+fetch 2def, async=0
+super 1abc, 2def
+mset 1-100
+mview store
+morph
+mray
+```
+
+### APBS Tools for electrostatics:
+
+`plugin load apbs_tools`
+
+### Mutagenesis Wizard:
+
+`plugin load mutagenesis`
+
+### DSSP for secondary structure assignment:
+
+`dssp object_name`
+
+### Load electron density maps:
+
+`load /path/to/map.ccp4`
+
+### Display symmetry mates:
+
+`symexp sym, object, cutoff_distance`
+
+### Display unit cell boundaries:
+
+`show unit_cell`
+
+### Display non-covalent interactions:
+
+`show nonbonded`
+
+### Display hydrogen bonds with custom settings:
+
+```
+set dash_gap, 0.5  # Adjust dash spacing
+set dash_length, 0.2  # Adjust dash length
+```
+
+### Check memory usage:
+
+`print(cmd.get_memory_usage())`
+
+### Optimize performance:
+
+`set defer_builds_mode, 1  # Defer object builds for faster rendering`
+
+### Debug scripts:
+
+```
+print(cmd.get_names())  # List all objects
+print(cmd.get_chains())  # List all chains
+```
+
+### Color all chains differently:
+
+`util.cbc`
+
+### Display all polar contacts:
+
+`show contacts`
+
+### Display all disulfide bonds:
+
+`show disulfides`
+
+### Display all salt bridges:
+
+`show salt_bridges`
+
+### Display all pi-pi interactions:
+
+`show pi_pi`
 
 
 
