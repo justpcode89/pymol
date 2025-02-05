@@ -62,7 +62,29 @@ color blue
 png structure.png
 ```
 Save this script as a .pml file and run it in PyMOL using:
+
 `@script.pml`
+
+### Selecting Atoms and Residues
+Select specific atoms or residues using the `select` command:
+
+```
+select resn ALA  # Selects all alanine residues
+select chain A   # Selects all atoms in chain A
+select name CA   # Selects all alpha carbons
+```
+
+### Changing Representations
+Change the molecular representation using the `show` command:
+
+```
+show sticks    # Displays sticks
+show spheres   # Displays spheres
+show surface   # Displays molecular surface
+show cartoon   # Displays secondary structure as a cartoon
+```
+
+
 
 
 
