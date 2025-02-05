@@ -4,3 +4,6 @@
 `fetch 1a1e`
 
 `delete 1a1e`
+
+### Load a local file:
+`load <file_name>.pdb`
