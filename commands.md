@@ -651,6 +651,30 @@ print(cmd.get_chains())  # List all chains
 
 `show pi_pi`
 
+### Loading and Saving
+- `load /path/to/file.pdb` - Load a PDB file.
 
+- `fetch 1abc` - Fetch a structure from the PDB.
+
+- `save /path/to/file.pse` - Save a session.
+
+- `save /path/to/file.png` - Save an image.
+
+- `save /path/to/file.pdb` - Save as a PDB file.
+
+- `reinitialize` - Reset PyMOL to its initial state.
+
+### Navigation
+- `zoom selection` - Zoom into a selection.
+
+- `orient selection` - Orient the view to a selection.
+
+- `reset` - Reset the view.
+
+- `turn x, 90` - Rotate 90 degrees around the X-axis.
+
+- `move x, 5` - Move along the X-axis.
+
+- `clip slab, 10` - Set the clipping plane.
 
 
