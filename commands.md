@@ -677,4 +677,217 @@ print(cmd.get_chains())  # List all chains
 
 - `clip slab, 10` - Set the clipping plane.
 
+### Object Management
+- `create new_object, selection` - Create a new object from a selection.
+
+- `delete object_name` - Delete an object.
+
+-`rename old_name, new_name` - Rename an object.
+
+- `copy new_object, old_object` - Copy an object.
+
+- `group group_name, object1, object2` - Group objects.
+
+### Representations
+- `show sticks` - Show sticks representation.
+
+- `show spheres` - Show spheres representation.
+
+- `show cartoon` - Show cartoon representation.
+
+- `show surface` - Show molecular surface.
+
+- `show dots` - Show dots representation.
+
+- `show lines` - Show lines representation.
+
+- `show mesh` - Show mesh representation.
+
+- `show ribbon` - Show ribbon representation.
+
+- `show nonbonded` - Show non-bonded interactions.
+
+- `show hydrogen` - Show hydrogen atoms.
+
+### Coloring
+- `color red` - Color the entire molecule red.
+
+- `color green, selection` - Color a selection green.
+
+- `util.cba` - Color by atom.
+
+- `util.cbc` - Color by chain.
+
+- `util.cbss` - Color by secondary structure.
+
+- `util.cbh` - Color by hydrophobicity.
+
+- `util.cbq` - Color by charge.
+
+- `spectrum b, selection` - Color by B-factor.
+
+- `spectrum q, selection` - Color by charge.
+
+- `spectrum cons, selection` - Color by conservation.
+
+### Transparency
+- `set transparency, 0.5` - Set transparency (0 = opaque, 1 = transparent).
+
+- `set surface_transparency, 0.5` - Set surface transparency.
+
+### Selection Commands
+- `select selection_name, selection` - Create a selection.
+
+- `select binding_site, resi 50-60` - Select residues 50-60.
+
+- `select ligand, resn LIG` - Select ligand residues.
+
+- `select backbone, name N+C+CA+O` - Select backbone atoms.
+
+- `select polar, (elem N+O) &! (hydro)` - Select polar atoms.
+
+- `select hydrophobic, (elem C) &! (polar)` - Select hydrophobic atoms.
+
+### Measurement Commands
+- `distance dist1, atom1, atom2` - Measure distance.
+
+- `angle angle1, atom1, atom2, atom3` - Measure angle.
+
+- `dihedral dihedral1, atom1, atom2, atom3, atom4` - Measure dihedral angle.
+
+- `get_area selection` - Calculate surface area.
+
+- `get_volume selection` - Calculate volume.
+
+- `get_sasa selection` - Calculate solvent-accessible surface area.
+
+- `get_buried_area selection1, selection2` - Calculate buried surface area.
+
+- `rmsd molecule1, molecule2` - Calculate RMSD.
+
+### Ray Tracing
+- `ray` - Render the current view.
+
+- `set ray_trace_mode, 1` - Enable ray tracing.
+
+- `set ray_shadows, 1` - Enable shadows.
+
+- `set ray_ambient_occlusion, 1` - Enable ambient occlusion.
+
+- `set ray_reflections, 1` - Enable reflections.
+
+### Movies and Animations
+- `mset 1-100` - Set 100 frames.
+
+- `mview store` - Store the current view.
+
+- `mplay` - Play the animation.
+
+- `mray` - Render all frames.
+
+- `msave /path/to/movie, png` - Save frames as PNGs.
+
+### Symmetry and Unit Cells
+- `symexp sym, object, cutoff_distance` - Display symmetry mates.
+
+- `show unit_cell` - Display unit cell boundaries.
+
+### Surfaces and Maps
+- `show surface` - Show molecular surface.
+
+- `load /path/to/map.ccp4` - Load an electron density map.
+
+- `isomesh mesh_name, map_name, level` - Create an isomesh.
+
+- `isosurface surface_name, map_name, level` - Create an isosurface.
+
+### Scripting Commands
+- `run /path/to/script.py` - Run a Python script.
+
+- `iterate selection, print(name, resi, vdw)` - Loop through atoms.
+
+- `iterate_state 1, selection, print(resi, resn)` - Loop through residues.
+
+- `cmd.get_names()` - List all objects.
+
+- `cmd.get_chains()` - List all chains.
+
+- `cmd.get_atom_coords(selection)` - Get atom coordinates.
+
+### Plugins and Extensions
+- `plugin load apbs_tools` - Load APBS Tools for electrostatics.
+
+- `plugin load mutagenesis` - Load Mutagenesis Wizard.
+
+- `plugin load movie_maker` - Load Movie Maker.
+
+- `plugin load dssp` - Load DSSP for secondary structure assignment.
+
+### Utility Commands
+- `help commands` - List all commands.
+
+- `help command_name` - Get help for a specific command.
+
+- `cd /path/to/directory` - Change the working directory.
+
+- `ls` - List all loaded objects.
+
+- `print(cmd.get_memory_usage())` - Check memory usage.
+
+### Niche Commands
+- `pseudoatom pseudo_name, pos=[x, y, z]` - Create a pseudoatom.
+
+- `label selection, "Residue %s" % resi` - Add a label.
+
+- `show disulfides` - Show disulfide bonds.
+
+- `show salt_bridges` - Show salt bridges.
+
+- `show pi_pi` - Show pi-pi interactions.
+
+- `show cation_pi` - Show cation-pi interactions.
+
+### Debugging and Optimization
+- `set defer_builds_mode, 1` - Defer object builds for faster rendering.
+
+- `set cache_frames, 1` - Cache frames for faster playback.
+
+- `set max_threads, 4` - Set the maximum number of threads.
+
+### One-Liners for Power Users
+- `util.cbc` - Color all chains differently.
+
+- `util.cbss` - Color by secondary structure.
+
+- `util.cbh` - Color by hydrophobicity.
+
+- `util.cbq` - Color by charge.
+
+- `util.propka` - Calculate pKa values.
+
+- `util.ray_shadows` - Enable shadows.
+
+### Color by Chain
+```
+for chain in cmd.get_chains():
+    cmd.color("chain_color", f"chain {chain}")
+```
+
+### Loop Through Residues
+```
+for resi in range(1, 100):
+    cmd.select(f"residue_{resi}", f"resi {resi}")
+    cmd.color("red", f"residue_{resi}")
+```
+
+### Batch Process PDB Files
+```
+import os
+for file in os.listdir("/path/to/pdbs"):
+    if file.endswith(".pdb"):
+        cmd.load(file)
+        cmd.show("cartoon")
+        cmd.png(f"{file}.png")
+        cmd.delete("all")
+```
 
