@@ -8,14 +8,20 @@
 ### Load a local file:
 `load <file_name>.pdb`
 
-### Cartoon: Represents secondary structures such as alpha helices and beta sheets.
+### Cartoon: Represents and hide secondary structures such as alpha helices and beta sheets.
 `show cartoon`
 
-### Sticks: Displays the structure as sticks, useful for small molecules.
+`hide cartoon`
+
+### Sticks: Displays and hide the structure as sticks, useful for small molecules.
 `show sticks`
 
-### Surface: Shows the molecular surface.
+`hide sticks`
+
+### Surface: Shows and hide the molecular surface.
 `show surface`
+
+`hide surface`
 
 ### You can change the color of the molecular structure to improve visualization.
 `color red, chain A`
@@ -55,6 +61,10 @@ color blue
 # Save an image
 png structure.png
 ```
+Save this script as a .pml file and run it in PyMOL using:
+`@script.pml`
+
+
 
 
 
