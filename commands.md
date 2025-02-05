@@ -84,6 +84,56 @@ show surface   # Displays molecular surface
 show cartoon   # Displays secondary structure as a cartoon
 ```
 
+### Coloring Molecules
+Color molecules using the `color` command:
+```
+color red       # Colors the entire molecule red
+color green, resn ALA  # Colors alanine residues green
+color blue, chain A    # Colors chain A blue
+```
+
+### Save your session to a file:
+
+`save /path/to/session.pse`
+
+### To load a saved session:
+
+`load /path/to/session.pse`
+
+### Displaying Secondary Structures
+Use the `cartoon` representation to highlight secondary structures:
+```
+show cartoon
+color orange, ss h  # Colors helices orange
+color yellow, ss s  # Colors sheets yellow
+```
+
+### Creating Surfaces
+Generate a molecular surface:
+```
+show surface
+set surface_color, white  # Sets surface color to white
+```
+
+### Highlighting Specific Regions
+Highlight specific regions using the `select` and `color` commands:
+
+```
+select binding_site, resi 50-60  # Selects residues 50-60
+color red, binding_site          # Colors the binding site red
+```
+### Aligning Structures
+Align two structures using the `align` command:
+`align molecule1, molecule2`
+
+### Measuring Distances and Angles
+Measure distances between atoms:
+
+`distance dist1, atom1, atom2  # Measures distance between atom1 and atom2`
+
+
+
+
 
 
 
