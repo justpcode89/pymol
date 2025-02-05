@@ -1,4 +1,6 @@
-### `turn` command
+## view Commands
+
+### `turn`
 ```
 DESCRIPTION
  
@@ -19,7 +21,7 @@ PYMOL API
     cmd.turn(string axis, float angle)
 ```
 
-### move
+### `move`
 ```
 DESCRIPTION
  
@@ -38,7 +40,7 @@ PYMOL API
  
     cmd.move(string axis, float distance)
 ```
-### clip
+### `clip`
 ```
 DESCRIPTION
  
@@ -70,4 +72,448 @@ EXAMPLES
 PYMOL API
  
     cmd.clip(string mode, float distance, string selection, int state)
+```
+
+### `rock`
+```
+DESCRIPTION
+ 
+    "rock" toggles Y axis rocking.
+ 
+USAGE
+ 
+    rock
+ 
+PYMOL API
+ 
+    cmd.rock()
+```
+
+### `show`
+```
+DESCRIPTION
+ 
+    "show" turns on representations for objects and selections.
+ 
+USAGE
+ 
+    show [ representation [, selection ]]
+ 
+ARGUMENTS
+ 
+    representation = lines, spheres, mesh, ribbon, cartoon, sticks,
+       dots, surface, labels, extent, nonbonded, nb_spheres, slice,
+       extent, slice, dashes, angles, dihedrals, cgo, cell, callback,
+       or everything
+ 
+    selection = string: a selection-expression or name-pattern
+ 
+NOTES
+ 
+    With no arguments, "show" alone turns on lines for all bonds and
+    nonbonded for all atoms in all molecular objects.
+ 
+EXAMPLES
+ 
+    show
+    show ribbon
+    show lines, (name CA+C+N)
+```
+
+### `hide`
+```
+DESCRIPTION
+ 
+    "hide" turns off atom and bond representations.
+ 
+ 
+USAGE
+ 
+    hide [ representation [, selection ]]
+ 
+ARGUMENTS
+ 
+    representation = lines, spheres, mesh, ribbon, cartoon,
+       sticks, dots, surface, labels, extent, nonbonded, nb_spheres,
+       slice, extent, slice, dashes, angles, dihedrals, cgo, cell, callback, 
+       or everything
+ 
+    selection = string: a selection-expression or name-pattern
+ 
+EXAMPLES
+ 
+    hide lines, all
+    hide ribbon
+ 
+PYMOL API
+ 
+    cmd.hide(string representation, string selection)
+```
+
+### `enable`
+```
+DESCRIPTION
+ 
+    "enable" turns on display of one or more objects and/or selections.
+ 
+USAGE
+ 
+    enable name
+ 
+ARGUMENTS    
+ 
+    name = name-pattern or selection. 
+ 
+NOTES
+ 
+    If name matches a selection name, then selection indicator dots
+    are shown for atoms in that selection.  If name is a
+    selection-expression, then all objects with atoms in that
+    selection are enabled.
+ 
+    For an object's content to be displayed in the 3D viewer, the
+    object must be enabled AND at least one of the available
+    representations must be shown.
+ 
+PYMOL API
+ 
+    cmd.enable(string object-name)
+ 
+EXAMPLES
+ 
+    enable target_protein  # enables the target_protein object
+ 
+    enable 1dn2.*   # enables all entities starting with 1dn2.
+ 
+    enable *lig     # enables all entities ending with lig
+```
+
+### `disable`
+
+```
+DESCRIPTION
+ 
+    "disable" turns off display of one or more objects and/or selections.
+ 
+USAGE
+ 
+    disable name
+ 
+ARGUMENTS    
+ 
+    name = name-pattern or selection.
+ 
+PYMOL API
+ 
+    cmd.disable(string name) 
+```
+
+### `reset`
+```
+DESCRIPTION
+ 
+    "reset" restores the rotation matrix to identity, sets the origin
+    to the center of mass (approx.) and zooms the window and clipping
+    planes to cover all objects.  Alternatively, it can reset object
+    matrices.
+ 
+USAGE
+ 
+    reset [ object ]
+ 
+PYMOL API
+ 
+    cmd.reset()
+
+```
+
+### `refresh`
+```
+DESCRIPTION
+ 
+    "reset" restores the rotation matrix to identity, sets the origin
+    to the center of mass (approx.) and zooms the window and clipping
+    planes to cover all objects.  Alternatively, it can reset object
+    matrices.
+ 
+USAGE
+ 
+    reset [ object ]
+ 
+PYMOL API
+ 
+    cmd.reset()
+ 
+PyMOL>help refresh
+ 
+DESCRIPTION
+ 
+    "refresh" causes the scene to be redrawn as soon as the operating
+    system allows it to be done.
+ 
+USAGE
+ 
+    refresh
+ 
+PYMOL API
+ 
+    cmd.refresh()
+```
+
+### `rebuild`
+
+```
+DESCRIPTION
+ 
+    "rebuild" forces PyMOL to recreate geometric objects in
+    case any of them have gone out of sync.
+ 
+USAGE
+ 
+    rebuild [selection [, representation ]]
+ 
+ARGUMENTS
+ 
+    selection = string {default: all}
+ 
+    representation = string: {default: everything}
+ 
+PYMOL API
+ 
+    cmd.rebuild(string selection, string representation)
+```
+
+### `zoom`
+```
+DESCRIPTION
+ 
+    "zoom" scales and translates the window and the origin to cover the
+    atom selection.
+ 
+USAGE
+ 
+    zoom [ selection [, buffer [, state [, complete [, animate ]]]]]
+ 
+EXAMPLES
+ 
+    zoom 
+    zoom complete=1
+    zoom 142/, animate=3
+    zoom (chain A)
+ 
+ARGUMENTS
+ 
+    selection = string: selection-expression or name pattern {default: all}
+ 
+    buffer = float: distance  {default: 0}
+ 
+    state = 0: uses all coordinate states {default}
+ 
+    state = -1: uses only coordinates for the current state
+ 
+    state > 0: uses coordinates for a specific state
+ 
+    complete = 0 or 1: will insure no atoms centers are clipped
+ 
+    animate < 0: uses the default animation duration
+ 
+    animate = 0: no animation
+ 
+    animate > 0: animates using the provided duration in seconds
+ 
+PYMOL API
+ 
+    cmd.zoom(string selection, float buffer, int state, int complete,
+             int animate)
+ 
+NOTES
+ 
+    The zoom command normally tries to guess an optimal zoom level for
+    visualization, balancing closeness against occasional clipping of
+    atoms out of the field of view.  You can change this behavior by
+    setting the complete option to 1, which will guarantee that the
+    atom positions for the entire selection will fit in the field of
+    an orthoscopic view.
+ 
+    To absolutely prevent clipping, you may also need to add an
+    additional buffer (typically 2 A) to account for graphical
+    representations which extend beyond the atom coordinates.
+```
+
+### `origin`
+```
+DESCRIPTION
+ 
+    "origin" sets the center of rotation about a selection.  If an
+    object name is specified, it can be used to set the center of
+    rotation for the object (for use in animation and editing).
+ 
+USAGE
+ 
+    origin [ selection [, object [,position, [, state ]]]]
+ 
+ARGUMENTS
+ 
+    selection = string: selection-expression or name-list {default: (all)}
+ 
+    state = 0 (default) use all coordinate states
+ 
+    state = -1 use only coordinates for the current state
+ 
+    state > 0  use coordinates for a specific state
+ 
+EXAMPLES
+ 
+    origin chain A
+ 
+    origin position=[1.0,2.0,3.0]
+ 
+PYMOL API
+ 
+    cmd.origin(string object-or-selection)
+```
+
+### `orient`
+```
+DESCRIPTION
+ 
+    "orient" aligns the principal components of the atoms in the
+    selection with the XYZ axes.  
+ 
+USAGE
+ 
+    orient [ selection [, state [, animate ]]]
+ 
+ARGUMENTS
+ 
+    selection = a selection-expression or name-pattern {default: (all)}
+ 
+    state = 0: use all coordinate states {default}
+ 
+    state = -1: uses only coordinates for the current state
+ 
+    state > 0: uses coordinates for a specific state
+ 
+EXAMPLES
+ 
+    orient organic
+ 
+NOTES
+ 
+    The function is similar to the orient command in X-PLOR.
+ 
+PYMOL API
+ 
+    cmd.orient(string object-or-selection, int state, float animate)
+```
+
+### `view`
+```
+DESCRIPTION
+ 
+    "view" saves and restore camera views.
+ 
+USAGE
+ 
+    view key [, action [, animate]]
+ 
+ARGUMENTS
+ 
+    key = string or *
+ 
+    action = store, recall, clear: {default: recall}
+ 
+NOTES
+ 
+    Views F1 through F12 are automatically bound to function keys
+    provided that "set_key" has not been used to redefine the
+    behaviour of the respective key, and that a "scene" has not been
+    defined for that key.
+ 
+EXAMPLES
+ 
+    view 0, store
+    view 0
+ 
+PYMOL API
+ 
+    cmd.view(string key, string action)
+```
+
+### `get_view`
+```
+DESCRIPTION
+ 
+    "get_view" returns and optionally prints out the current view
+    information in a format which can be embedded into a command
+    script and can be used in subsequent calls to "set_view".
+ 
+    If a log file is currently open, get_view will not write the view
+    matrix to the screen unless the "output" parameter is 2.
+ 
+USAGE
+ 
+    get_view [output]
+ 
+ARGUMENTS
+ 
+    output = 0: output matrix to screen
+ 
+    output = 1: do not Output matrix to screen
+ 
+    output = 2: force output to screen even if log file is open
+ 
+    output = 3: return formatted string instead of a list
+ 
+NOTES
+ 
+    Contents of the view matrix:
+ 
+    * 0  -  8: column-major 3x3 matrix which rotates model space to camera space
+ 
+    * 9  - 11: origin of rotation relative to camera (in camera space)
+ 
+    * 12 - 14: origin of rotation (in model space)
+ 
+    * 15: front plane distance from the camera
+ 
+    * 16: rear plane distance from the camera
+ 
+    * 17: orthoscopic flag (+/-) and field of view (if abs(value) > 1)
+ 
+    The camera always looks down -Z with its +X left and its +Y down.
+ 
+    Therefore, in the default view, model +X is to the observer's
+    right, +Y is upward, and +Z points toward the observer.
+ 
+PYMOL API
+ 
+    cmd.get_view(output=1, quiet=1)
+```
+
+### `set_view`
+```
+DESCRIPTION
+ 
+    "set_view" sets viewing information for the current scene,
+    including the rotation matrix, position, origin of rotation,
+    clipping planes, and the orthoscopic flag.
+ 
+USAGE
+ 
+    set_view [ view ] 
+ 
+EXAMPLE
+ 
+    set_view (\
+        0.999876618,   -0.000452542,   -0.015699286,\
+        0.000446742,    0.999999821,   -0.000372844,\
+        0.015699454,    0.000365782,    0.999876678,\
+        0.000000000,    0.000000000, -150.258514404,\
+        11.842411041,   20.648729324,    8.775371552,\
+        118.464958191,  182.052062988,    0.000000000 )
+ 
+PYMOL API
+ 
+    cmd.set_view(string-or-sequence view)  
 ```
