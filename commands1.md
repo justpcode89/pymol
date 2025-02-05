@@ -283,6 +283,19 @@ PYMOL API
     cmd.rebuild(string selection, string representation)
 ```
 
+### `reinitialize`
+
+```
+DESCRIPTION
+ 
+    "reinitialize" reinitializes the program by deleting all objects
+    and restoring the default program settings.
+ 
+USAGE
+ 
+    reinitialize
+```
+
 ### `zoom`
 ```
 DESCRIPTION
@@ -517,3 +530,290 @@ PYMOL API
  
     cmd.set_view(string-or-sequence view)  
 ```
+
+## movies commands
+
+### `mplay`
+
+```
+DESCRIPTION
+ 
+    "mplay" starts the movie.
+ 
+USAGE
+ 
+    mplay
+ 
+PYMOL API
+ 
+    cmd.mplay()
+```
+
+### `mstop`
+```
+DESCRIPTION
+ 
+    "mstop" stops playing of the movie.
+ 
+USAGE
+ 
+    mstop
+```
+
+### `mset`
+```
+DESCRIPTION
+ 
+    "mset" sets up a relationship between molecular states and movie
+    frames.  This makes it possible to control which states are shown
+    in which frame.
+ 
+USAGE
+ 
+    mset specification [ ,frame ]
+ 
+PYMOL API
+ 
+    cmd.mset( string specification [, int frame] )
+ 
+EXAMPLES
+ 
+    # simplest case, one state -> one frame
+ 
+    mset 1
+ 
+    # ten frames, all corresponding to state 1
+ 
+    mset 1 x10     
+ 
+    # the first thirty frames are state 1
+    # the next 15 frames pass through states 1-15
+    # the next 30 frames are of state 15
+    # the next 15 frames iterate back to state 1
+ 
+    mset 1 x30 1 -15 15 x30 15 -1
+```
+
+### `mdo`
+```
+DESCRIPTION
+ 
+    "mdo" defines (or redefines) the command-line operations
+    associated with a particular movie frame.  These "generalized
+    movie commands" will be executed every time the numbered frame is
+    played.
+ 
+USAGE
+ 
+    mdo frame: command
+ 
+PYMOL API
+ 
+    cmd.mdo( int frame, string command )
+ 
+EXAMPLE
+ 
+    // Creates a single frame movie involving a rotation about X and Y
+ 
+    load test.pdb
+    mset 1
+    mdo 1, turn x,5; turn y,5;
+    mplay
+ 
+NOTES
+ 
+ These commands are usually created
+    by a PyMOL utility program (such as movie.rock).  Command can
+    actually contain several commands separated by semicolons ';'
+ 
+    The "mset" command must first be used to define the movie before
+    "mdo" statements will have any effect.  Redefinition of the movie
+    clears any existing mdo statements.
+```
+
+### `mpng`
+```
+DESCRIPTION
+ 
+    "mpng" writes movie frames as a series of numbered png files.
+ 
+USAGE
+ 
+    mpng prefix [, first [, last [, preserve [, modal [, mode [, quiet
+        [, width [, height ]]]]]]]]
+ 
+ARGUMENTS
+ 
+    prefix = string: filename prefix for saved images -- output files
+    will be numbered and end in ".png"
+ 
+    first = integer: starting frame {default: 0 (first frame)}
+ 
+    last = integer: last frame {default: 0 (last frame)}
+ 
+    preserve = 0/1: Only write non-existing files {default: 0}
+ 
+    modal = integer: will frames be rendered with a modal draw loop
+ 
+    mode = int: 2=ray, 1=draw, 0=normal {default: -1, check
+    ray_trace_frames or draw_frames}
+ 
+    width = int: width in pixels {default: current viewport}
+ 
+    height = int: height in pixels {default: current viewport}
+ 
+NOTES
+ 
+    If the "ray_trace_frames" variable is non-zero, then the frames
+    will be ray-traced.  Note that this can take many hours for a long
+    movie with complex content displayed.
+ 
+    Also, be sure to avoid setting "cache_frames" when rendering a
+    long movie to avoid running out of memory.
+ 
+    Arguments "first" and "last" can be used to specify an inclusive
+    interval over which to render frames.  Thus, you can write a smart
+    Python program that will automatically distribute rendering over a
+    cluster of workstations.  If these options are left at zero, then
+    the entire movie will be rendered.
+ 
+PYMOL API
+ 
+    cmd.mpng(string prefix, int first, int last)
+```
+
+### `mmatrix`
+```
+DESCRIPTION
+ 
+    "mmatrix" sets up a matrix to be used for the first frame of the movie.
+ 
+USAGE
+ 
+    mmatrix action
+ 
+ARGUMENTS
+ 
+    action = clear, store, or recall
+ 
+NOTES
+ 
+    This command ensures that the movie always starts from the same
+    camera view.
+ 
+    "mmatrix" should not be used when controlling the camera using
+    "mview".
+ 
+PYMOL API
+ 
+    cmd.mmatrix( string action )
+ 
+EXAMPLES
+ 
+    mmatrix store
+```
+
+### `frame`
+```
+DESCRIPTION
+ 
+    "frame" sets the viewer to the indicated movie frame.
+ 
+USAGE
+ 
+    frame frame
+ 
+ARGUMENTS
+ 
+    frame = integer: frame number to display
+ 
+EXAMPLE
+ 
+    frame 10
+ 
+PYMOL API
+ 
+    cmd.frame( int frame_number )
+ 
+NOTES
+ 
+    Frame numbers are 1-based.
+```
+
+### `rewind`
+```
+DESCRIPTION
+ 
+    "rewind" goes to the beginning of the movie.
+ 
+USAGE
+ 
+    rewind
+ 
+PYMOL API
+ 
+    cmd.rewind()
+```
+
+### `middle`
+```
+DESCRIPTION
+ 
+    "middle" goes to the middle of the movie.
+ 
+USAGE
+ 
+    middle
+ 
+PYMOL API
+ 
+    cmd.middle()
+```
+
+### `ending`
+```
+DESCRIPTION
+ 
+    "ending" goes to the end of the movie.
+ 
+USAGE
+ 
+    ending
+ 
+PYMOL API
+ 
+    cmd.ending()
+```
+
+### `forward`
+
+```
+DESCRIPTION
+ 
+    "forward" moves the movie one frame forward.
+ 
+USAGE
+ 
+    forward
+ 
+PYMOL API
+ 
+    cmd.forward()
+```
+
+### `backward`
+```
+DESCRIPTION
+ 
+    "backward" moves the movie back one frame.
+ 
+USAGE
+ 
+    backward
+ 
+PYMOL API
+ 
+    cmd.backward()
+```
+
+## imaging commands
