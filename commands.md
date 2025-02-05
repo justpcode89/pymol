@@ -277,10 +277,121 @@ set specular, 1     # Adjust reflection intensity
 
 `ray  # Renders the current view`
 
+### Set the resolution for ray tracing:
 
+```
+set ray_trace_frames, 1  # High-quality rendering for animations
+set ray_trace_gain, 10   # Adjust brightness
+```
 
+### Export an image:
 
+`png /path/to/image.png, dpi=300  # Saves as PNG with 300 DPI`
 
+### Export a movie:
+
+```
+mplay
+mset 1-100  # Sets 100 frames
+mray        # Renders all frames
+msave /path/to/movie, png  # Saves frames as PNGs
+```
+
+### Run a Python script:
+
+`run /path/to/script.py`
+
+### Loop through residues:
+
+`iterate (resi 1-10), print(name, resi, vdw)  # Prints atom names, residue numbers, and VDW radii`
+
+### Customize labels with Python:
+
+`label selection, "Residue %s" % resi`
+
+### List all loaded objects:
+
+`ls`
+
+### help commands
+
+`help commands`
+
+### Reset the view:
+
+`reset`
+
+### Clear the workspace:
+
+`reinitialize  # Clears all objects and settings`
+
+### Set the working directory:
+
+`cd /path/to/directory`
+
+### Hide/show the command line:
+
+`set internal_gui, off  # Hides the command line`
+
+### Customize the GUI:
+
+`set internal_gui_width, 300  # Adjusts the width of the GUI`
+
+### Enable/disable mouse controls:
+
+`set mouse_enabled, 0  # Disables mouse controls`
+
+### Load a plugin:
+
+`plugin load plugin_name`
+
+### Install a plugin:
+
+`plugin install plugin_name`
+
+Example plugins:
+
+- APBS Tools: For electrostatic potential calculations.
+
+- Mutagenesis Wizard: For in silico mutagenesis.
+
+- Movie Maker: For creating animations.
+
+### Color residues by chain:
+```
+for chain in ["A", "B", "C"]:
+    color chain_color, chain
+```
+
+### Create a surface for a specific selection:
+
+```
+create surface_object, selection
+show surface, surface_object
+```
+
+### Align multiple structures:
+
+```
+for obj in cmd.get_names():
+    align obj, reference_object
+```
+
+### Center and zoom on a selection:
+
+`zoom selection`
+
+### Display all hydrogen bonds:
+
+`show hbonds`
+
+### Color by secondary structure:
+
+`util.cbss`
+
+### Display all polar contacts:
+
+`show contacts`
 
 
 
