@@ -124,12 +124,159 @@ color red, binding_site          # Colors the binding site red
 ```
 ### Aligning Structures
 Align two structures using the `align` command:
+
 `align molecule1, molecule2`
 
 ### Measuring Distances and Angles
 Measure distances between atoms:
 
 `distance dist1, atom1, atom2  # Measures distance between atom1 and atom2`
+
+Measure angles:
+
+`angle angle1, atom1, atom2, atom3  # Measures angle between three atoms`
+
+### Creating Animations
+Create animations using the mplay and mview commands:
+
+```
+mplay          # Starts animation playback
+mview store    # Stores the current frame
+mview rewind   # Rewinds the animation
+```
+
+### Customizing Labels
+Add labels to specific atoms or residues:
+
+`label resn ALA and name CA, "ALA"  # Labels alpha carbons of alanine residues`
+
+### Using Scripts
+Run a script to automate tasks:
+
+`run /path/to/script.py`
+
+### Example script:
+
+```
+load 1abc
+show cartoon
+color red, chain A
+save image.png
+```
+
+### Keyboard Shortcuts
+- A: Toggle atom labels.
+- S: Toggle sticks representation.
+- C: Toggle cartoon representation.
+- Spacebar: Reset view.
+
+### Create a new object from a selection:
+
+`create new_object, selection`
+
+example:
+
+`create ligand, resn LIG`
+
+### Delete an object:
+
+`delete object_name`
+
+### Rename an object:
+
+`rename old_name, new_name`
+
+### Copy an object:
+
+`copy new_object, old_object`
+
+### Group objects:
+
+`group group_name, object1, object2`
+
+### Transparency:
+
+`set transparency, 0.5  # 0 = opaque, 1 = fully transparent`
+
+### Dashed lines for hydrogen bonds:
+
+`show dashes`
+
+### Display symmetry-related molecules:
+
+`symexp sym, object, cutoff_distance`
+
+example:
+
+`symexp sym, 1abc, 10  # Displays symmetry mates within 10 Å`
+
+### Display non-bonded interactions:
+
+`show nonbonded`
+
+### Display disulfide bonds:
+
+`show disulfides`
+
+### Set the background color:
+
+`bg white  # Options: white, black, gray, etc.`
+
+### Set the field of view:
+
+`set field_of_view, 50  # Adjust the zoom level`
+
+### Set the depth cueing (fog effect):
+
+`set fog, 0.5  # 0 = no fog, 1 = maximum fog`
+
+### Set the lighting:
+
+```
+set light_count, 4  # Number of light sources
+set specular, 1     # Adjust reflection intensity
+```
+
+### Color by element:
+
+`util.cba  # Color by atom (default coloring)`
+
+### Color by hydrophobicity:
+
+`util.cbh  # Color by hydrophobicity`
+
+### Color by charge:
+
+`util.cbc  # Color by charge`
+
+### Color by B-factor (thermal motion):
+
+`spectrum b, selection  # Colors by B-factor values`
+
+### Color by conservation:
+
+`spectrum cons, selection  # Requires conservation data`
+
+### Measure dihedral angles:
+
+`dihedral angle_name, atom1, atom2, atom3, atom4`
+
+### Calculate RMSD between two structures:
+
+`rmsd molecule1, molecule2`
+
+### Calculate surface area:
+
+`get_area selection`
+
+### Calculate electrostatic potential:
+
+`util.propka  # Requires pre-calculated electrostatic data`
+
+### Render high-quality images:
+
+`ray  # Renders the current view`
+
 
 
 
